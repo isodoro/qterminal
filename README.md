@@ -26,6 +26,21 @@ Enhanced bookmark search and filtering:
 - Automatically expand matching groups and their parent paths.
 - Restore the complete bookmark tree when the search is cleared.
 
+## Demonstrations
+
+The following videos demonstrate the additional functionality introduced by this fork.
+
+### Variable Session Manager (V.S.M.)
+
+- [Active Pane Display](docs/videos/active-pane-display.mp4) – Displaying the active terminal pane value change.
+- [LEAD Descriptions](docs/videos/lead-descriptions.mp4) – LEAD Descriptions – Demonstrating descriptive labels and information associated with managed variables.
+- [V.S.M. and LEAD Integration](docs/videos/vars-leads-test.mp4) – Demonstrating the interaction between the Variable Session Manager and LEAD functionality.
+
+### Improved Bookmark Filtering
+
+- [Improved Filtering](docs/videos/improved-filtering.mp4) – Searching bookmark names and command contents, including nested groups.
+- [Expand and Collapse](docs/videos/expand-and-collapse.mp4) – Demonstrating bookmark group expansion and collapse behaviour.
+
 ## Platform and Compatibility
 
 This project is developed specifically for **Kali Linux**.
