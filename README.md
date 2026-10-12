@@ -1,37 +1,74 @@
-# QTerminal
+# QTerminal – Kali Enhanced
 
-## Overview
+An independently maintained Kali Linux enhancement of **QTerminal**, based on the upstream QTerminal 2.4.0 release.
 
-![Screenshot of QTerminal with bookmarks pane and 3 tabs open](qterminal.png)
+This project introduces additional terminal-management features designed to improve productivity when working with multiple terminal tabs and panes.
 
-QTerminal is a lightweight Qt terminal emulator based on [QTermWidget](https://github.com/lxqt/qtermwidget).
+## Features
 
-It is maintained by the LXQt project but can be used independently from this desktop environment. The only bonds are [lxqt-build-tools](https://github.com/lxqt/lxqt-build-tools) representing a build dependency.
+### Variable Session Manager (V.S.M.)
 
-This project is licensed under the terms of the [GPLv2](https://www.gnu.org/licenses/gpl-2.0.en.html) or any later version. See the LICENSE file for the full text of the license.
+V.S.M. provides per-terminal-pane shell variable management.
+
+- Create, edit, list and delete managed variables.
+- Maintain independent variable values in each terminal pane.
+- Use the same variable names across different terminal sessions without conflicts.
+- Automatically refresh the variable list when changes are made.
+
+The initial implementation targets interactive Zsh sessions.
+
+### Improved Bookmark Filtering
+
+Enhanced bookmark search and filtering:
+
+- Search bookmark names and command contents.
+- Match nested bookmark groups.
+- Keep parent groups visible when matching items are found.
+- Automatically expand matching groups and their relevant parent paths.
+- Restore the complete bookmark tree when the search is cleared.
+
+## Platform
+
+This project is specifically developed and tested for **Kali Linux**.
+
+It is not intended to be a general-purpose replacement for upstream QTerminal across multiple Linux distributions.
+
+## Project Status
+
+Development in progress.
+
+Current development priorities:
+
+- Complete automatic V.S.M. integration with interactive Zsh sessions.
+- Finalise Debian package creation and installation.
+- Test installation and operation on a fresh Kali Linux system.
+- Prepare installation and build documentation.
 
 ## Installation
 
-### Compiling sources
+Installation packages are not yet available.
 
-Dependencies Qt ≥ 6.6.0 and [QTermWidget](https://github.com/lxqt/qtermwidget).
-Optional dependencies include [libcanberra](https://0pointer.net/lennart/projects/libcanberra/) for playing bells.
-In order to build CMake ≥ 3.18.0 and [lxqt-build-tools](https://github.com/lxqt/lxqt-build-tools) are needed as well as optionally Git to pull latest VCS checkouts.
+The intended distribution method is a downloadable Debian `.deb` package, with instructions for users who prefer to build from source.
 
-Code configuration is handled by CMake. Building out of source is required. CMake variable `CMAKE_INSTALL_PREFIX` will normally have to be set to `/usr`.
+## Building
 
-To build run `make`, to install `make install` which accepts variable `DESTDIR` as usual.
+Build instructions will be provided once the Debian packaging and installation process have been finalised.
 
-### Binary packages
+## Upstream Project and Attribution
+The original QTerminal project is licensed under GPL-2.0-or-later. See the LICENSE file for the applicable licence terms.
 
-Official binary packages are provided by all major Linux and BSD distributions.
-Just use your package manager to search for string `qterminal`.
+This project is based on the original QTerminal project maintained by the LXQt team.
 
-### Translation
+- Original project: https://github.com/lxqt/qterminal
+- Original version: 2.4.0
+- Development fork: https://github.com/isodoro/qterminal
 
-Translations can be done in [LXQt-Weblate](https://translate.lxqt-project.org/projects/lxqt-desktop/qterminal/)
+All original QTerminal components remain subject to their applicable upstream licensing and copyright notices.
 
-<a href="https://translate.lxqt-project.org/projects/lxqt-desktop/qterminal/">
-<img src="https://translate.lxqt-project.org/widgets/lxqt-desktop/-/qterminal/multi-auto.svg" alt="Translation status" />
-</a>
+This is an independent project and is not an official LXQt or Kali Linux release.
 
+## Contributing
+
+Development and issue tracking take place in this repository.
+
+Feedback, suggestions and testing reports are welcome.
