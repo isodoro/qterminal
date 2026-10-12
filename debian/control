@@ -1,0 +1,31 @@
+Source: qterminal
+Section: x11
+Priority: optional
+Maintainer: isodoro <237139134+isodoro@users.noreply.github.com>
+Homepage: https://github.com/lxqt/qterminal
+Vcs-Browser: https://github.com/isodoro/qterminal
+Vcs-Git: https://github.com/isodoro/qterminal.git
+Standards-Version: 4.7.0
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ pkgconf,
+ qt6-base-dev (>= 6.6.0),
+ qt6-tools-dev,
+ liblayershellqtinterface-dev (>= 6.0.0),
+ libqtermwidget-dev (>= 2.4.0),
+ lxqt-build-tools (>= 2.4.0),
+ libx11-dev
+Rules-Requires-Root: no
+
+Package: qterminal
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: qterminal-l10n
+Provides: x-terminal-emulator
+Description: Lightweight Qt terminal emulator - isodoro Kali build
+ QTerminal is a lightweight terminal emulator based on QTermWidget.
+ .
+ This downstream Kali build includes a per-pane Variable Session
+ Manager, automatic Zsh integration and improved bookmark filtering.
+ It is independently maintained and is not an official LXQt release.

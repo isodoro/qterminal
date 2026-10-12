@@ -250,9 +250,15 @@ install(FILES
 
 install(FILES
     qterminal_bookmarks_example.xml
-    src/qterminal-variables.bash
     src/qterminal-variables.zsh
     DESTINATION "${CMAKE_INSTALL_DATADIR}/qterminal"
+)
+
+install(FILES
+    src/zsh/.zshenv
+    src/zsh/.zprofile
+    src/zsh/.zshrc
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/qterminal/zsh"
 )
 
 if(NOT APPLEBUNDLE)

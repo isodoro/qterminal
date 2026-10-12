@@ -1,0 +1,9 @@
+qterminal (2.4.0-1+isodoro1) kali; urgency=medium
+
+  * Downstream Kali build based on LXQt QTerminal 2.4.0.
+  * Add the per-pane Variable Session Manager.
+  * Add automatic Zsh startup integration using separate QTerminal overlays.
+  * Improve recursive bookmark filtering.
+  * Identify this package as an independent downstream build.
+
+ -- isodoro <237139134+isodoro@users.noreply.github.com>  Mon, 12 Oct 2026 10:56:40 -0400

@@ -25,6 +25,7 @@
 #include <QLocalSocket>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
@@ -75,9 +76,11 @@ TermWidgetImpl::TermWidgetImpl(TerminalConfig &cfg, QWidget * parent)
     setWorkingDirectory(cfg.getWorkingDirectory());
 
     QStringList shell = cfg.getShell();
+    QString shellProgram = shell.value(0);
+
     if (!shell.isEmpty())
     {
-        setShellProgram(shell.at(0));
+        setShellProgram(shellProgram);
         shell.removeAt(0);
         if (!shell.isEmpty())
             setArgs(shell);
@@ -132,6 +135,25 @@ TermWidgetImpl::TermWidgetImpl(TerminalConfig &cfg, QWidget * parent)
 
     if (!m_variableSocketPath.isEmpty())
         environment << QStringLiteral("QTERMINAL_VARIABLE_SOCKET=%1").arg(m_variableSocketPath);
+
+    // Enable the QTerminal Zsh startup overlay for normal Zsh sessions.
+    if (!m_hasCommand
+        && QFileInfo(shellProgram).fileName() == QStringLiteral("zsh"))
+    {
+        const QString zshOverlayDir =
+            QDir(QString::fromLocal8Bit(APP_DIR)).filePath(QStringLiteral("zsh"));
+
+        if (QDir(zshOverlayDir).exists())
+        {
+            if (qEnvironmentVariableIsSet("ZDOTDIR"))
+            {
+                environment << QStringLiteral("QTERMINAL_VSM_ORIGINAL_ZDOTDIR=%1")
+                                   .arg(qEnvironmentVariable("ZDOTDIR"));
+            }
+
+            environment << QStringLiteral("ZDOTDIR=%1").arg(zshOverlayDir);
+        }
+    }
 
     setEnvironment(environment);
     startShellProgram();

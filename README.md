@@ -1,71 +1,96 @@
 # QTerminal – Kali Enhanced
 
-An independently maintained Kali Linux enhancement of **QTerminal**, based on the upstream QTerminal 2.4.0 release.
+An independently maintained Kali Linux enhancement of **QTerminal 2.4.0**, based on the original LXQt project.
 
-This project introduces additional terminal-management features designed to improve productivity when working with multiple terminal tabs and panes.
+This fork adds terminal-management features designed to improve productivity when working with multiple terminal tabs and panes.
 
 ## Features
 
 ### Variable Session Manager (V.S.M.)
 
-V.S.M. provides per-terminal-pane shell variable management.
+Per-terminal-pane management of shell variables in interactive Zsh sessions.
 
 - Create, edit, list and delete managed variables.
 - Maintain independent variable values in each terminal pane.
-- Use the same variable names across different terminal sessions without conflicts.
+- Reuse the same variable names across different panes without conflicts.
 - Automatically refresh the variable list when changes are made.
-
-The initial implementation targets interactive Zsh sessions.
+- Integrates with Zsh automatically when QTerminal starts an interactive Zsh session.
 
 ### Improved Bookmark Filtering
 
 Enhanced bookmark search and filtering:
 
 - Search bookmark names and command contents.
-- Match nested bookmark groups.
+- Match items inside nested bookmark groups.
 - Keep parent groups visible when matching items are found.
-- Automatically expand matching groups and their relevant parent paths.
+- Automatically expand matching groups and their parent paths.
 - Restore the complete bookmark tree when the search is cleared.
 
-## Platform
+## Platform and Compatibility
 
-This project is specifically developed and tested for **Kali Linux**.
+This project is developed specifically for **Kali Linux**.
 
-It is not intended to be a general-purpose replacement for upstream QTerminal across multiple Linux distributions.
+- **Tested on:** Kali Linux 2026.1 (fresh installation).
+- **Package format:** Debian `.deb` (amd64).
+- **Shell integration:** Interactive Zsh sessions.
+- **Other distributions:** Not currently tested or supported.
 
-## Project Status
-
-Development in progress.
-
-Current development priorities:
-
-- Complete automatic V.S.M. integration with interactive Zsh sessions.
-- Finalise Debian package creation and installation.
-- Test installation and operation on a fresh Kali Linux system.
-- Prepare installation and build documentation.
+This is an independent downstream build, not a general-purpose replacement for upstream QTerminal across other Linux distributions.
 
 ## Installation
 
-Installation packages are not yet available.
+Download the Debian package from the project's [GitHub Releases](https://github.com/isodoro/qterminal/releases/latest) page.
 
-The intended distribution method is a downloadable Debian `.deb` package, with instructions for users who prefer to build from source.
+Install the downloaded package using:
 
-## Building
+```bash
+sudo apt install ./qterminal_2.4.0-1+isodoro1_amd64.deb
+```
 
-Build instructions will be provided once the Debian packaging and installation process have been finalised.
+APT will resolve the package's required dependencies.
+
+To launch QTerminal:
+
+```bash
+qterminal
+```
+
+## Building from Source
+
+Clone the project source:
+
+```bash
+git clone --branch kali-vsm https://github.com/isodoro/qterminal.git
+cd qterminal
+```
+The project uses the standard Debian packaging build process.
+
+Install the required build dependencies:
+
+```bash
+sudo apt install build-essential debhelper cmake pkgconf \
+    qt6-base-dev qt6-tools-dev liblayershellqtinterface-dev \
+    libqtermwidget-dev lxqt-build-tools libx11-dev
+```
+
+Build the Debian package:
+
+```bash
+dpkg-buildpackage -us -uc -b
+```
+
+The resulting Debian packages are created in the parent directory of the source tree.
 
 ## Upstream Project and Attribution
-The original QTerminal project is licensed under GPL-2.0-or-later. See the LICENSE file for the applicable licence terms.
 
-This project is based on the original QTerminal project maintained by the LXQt team.
+This project is based on **QTerminal 2.4.0**, maintained by the LXQt team.
 
 - Original project: https://github.com/lxqt/qterminal
-- Original version: 2.4.0
 - Development fork: https://github.com/isodoro/qterminal
 
-All original QTerminal components remain subject to their applicable upstream licensing and copyright notices.
+QTerminal is licensed under GPL-2.0-or-later. Third-party components retain their applicable licences and copyright notices.
 
-This is an independent project and is not an official LXQt or Kali Linux release.
+This is an independently maintained downstream project and is not an official LXQt or Kali Linux release.
 
 ## Contributing
 
