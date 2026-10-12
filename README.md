@@ -54,20 +54,6 @@ https://github.com/user-attachments/assets/672cb8ef-9270-45de-a3e7-629d8123bbba
 
 https://github.com/user-attachments/assets/d1b25802-5faf-46cb-8906-3299eb3922da
 
-## Demonstrations
-
-The following videos demonstrate the additional functionality introduced by this fork.
-
-### Variable Session Manager (V.S.M.)
-
-- [Active Pane Display](docs/videos/active-pane-display.mp4) – Displaying the active terminal pane value change.
-- [LEAD Descriptions](docs/videos/lead-descriptions.mp4) – LEAD Descriptions – Demonstrating descriptive labels and information associated with managed variables.
-- [V.S.M. and LEAD Integration](docs/videos/vars-leads-test.mp4) – Demonstrating the interaction between the Variable Session Manager and LEAD functionality.
-
-### Improved Bookmark Filtering
-
-- [Improved Filtering](docs/videos/improved-filtering.mp4) – Searching bookmark names and command contents, including nested groups.
-- [Expand and Collapse](docs/videos/expand-and-collapse.mp4) – Demonstrating bookmark group expansion and collapse behaviour.
 
 ## Platform and Compatibility
 
