@@ -21,6 +21,17 @@
 #include <QPainter>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QLocalServer>
+#include <QLocalSocket>
+#include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QStandardPaths>
+#include <QCryptographicHash>
+#include <QCoreApplication>
+#include <QDebug>
 #include <QAbstractButton>
 #include <QMouseEvent>
 #include <cassert>
@@ -72,8 +83,6 @@ TermWidgetImpl::TermWidgetImpl(TerminalConfig &cfg, QWidget * parent)
             setArgs(shell);
     }
 
-    setEnvironment(QStringList(QStringLiteral("TERM=%1").arg(Properties::Instance()->term)));
-
     setMotionAfterPasting(Properties::Instance()->m_motionAfterPaste);
     disableBracketedPasteMode(Properties::Instance()->m_disableBracketedPasteMode);
 
@@ -92,18 +101,234 @@ TermWidgetImpl::TermWidgetImpl(TerminalConfig &cfg, QWidget * parent)
 
     connect(this, &QTermWidget::urlActivated, this, &TermWidgetImpl::activateUrl);
     connect(this, &QTermWidget::bell, this, &TermWidgetImpl::bell);
+        if (!m_hasCommand)
+    {
+        m_variableServer = new QLocalServer(this);
+        m_variableSocketPath = QDir::tempPath()
+            + QStringLiteral("/qterminal-")
+            + QString::number(QCoreApplication::applicationPid())
+            + QStringLiteral("-")
+            + QString::number(TermWidgetCount);
 
+        QLocalServer::removeServer(m_variableSocketPath);
+        m_variableServer->setSocketOptions(QLocalServer::UserAccessOption);
+
+        if (m_variableServer->listen(m_variableSocketPath))
+        {
+            connect(m_variableServer, &QLocalServer::newConnection,
+                    this, &TermWidgetImpl::acceptVariableConnection);
+        }
+        else
+        {
+            qWarning() << "QTerminal variable server failed to listen:"
+                       << m_variableServer->errorString();
+            delete m_variableServer;
+            m_variableServer = nullptr;
+            m_variableSocketPath.clear();
+        }
+    }
+    QStringList environment;
+    environment << QStringLiteral("TERM=%1").arg(Properties::Instance()->term);
+
+    if (!m_variableSocketPath.isEmpty())
+        environment << QStringLiteral("QTERMINAL_VARIABLE_SOCKET=%1").arg(m_variableSocketPath);
+
+    setEnvironment(environment);
     startShellProgram();
 }
 
 TermWidgetImpl::~TermWidgetImpl()
 {
+    for (QLocalSocket *subscriber : m_variableSubscribers)
+    {
+        if (subscriber)
+        {
+            disconnect(subscriber, nullptr, this, nullptr);
+            subscriber->abort();
+        }
+    }
+
+    m_variableSubscribers.clear();
+
+    if (m_variableServer)
+    {
+        m_variableServer->close();
+        QLocalServer::removeServer(m_variableSocketPath);
+    }
+
 #ifdef HAVE_LIBCANBERRA
     if (libcanberra_context) {
         ca_context_destroy (libcanberra_context);
     }
 #endif
 }
+
+void TermWidgetImpl::enqueueManagedVariableRequest(const QJsonObject &request)
+{
+    if (m_hasCommand || !m_variableServer)
+        return;
+
+    m_variableRequests.enqueue(request);
+
+    const QByteArray notification =
+        "{\"event\":\"request\"}\n";
+
+    for (QLocalSocket *subscriber : m_variableSubscribers)
+    {
+        if (subscriber
+            && subscriber->state() == QLocalSocket::ConnectedState)
+        {
+            subscriber->write(notification);
+            subscriber->flush();
+        }
+    }
+}
+
+
+void TermWidgetImpl::acceptVariableConnection()
+{
+    if (!m_variableServer)
+        return;
+
+    while (m_variableServer->hasPendingConnections())
+    {
+        QLocalSocket *socket = m_variableServer->nextPendingConnection();
+        if (!socket)
+            continue;
+
+        connect(socket, &QLocalSocket::readyRead, this, [this, socket]()
+        {
+            QByteArray buffer =
+                socket->property("qterminalRequestBuffer").toByteArray();
+            buffer.append(socket->readAll());
+
+            if (buffer.size() > 65536)
+            {
+                socket->write(
+                    "{\"ok\":false,\"error\":\"request too large\"}\n");
+                socket->flush();
+                socket->disconnectFromServer();
+                return;
+            }
+
+            const qsizetype newlinePosition = buffer.indexOf('\n');
+
+            // Wait until the complete newline-delimited request arrives.
+            if (newlinePosition < 0)
+            {
+                socket->setProperty("qterminalRequestBuffer", buffer);
+                return;
+            }
+
+            // This connection supports exactly one request.
+            if (buffer.indexOf('\n', newlinePosition + 1) >= 0
+                || !buffer.mid(newlinePosition + 1).trimmed().isEmpty())
+            {
+                socket->write(
+                    "{\"ok\":false,\"error\":\"multiple requests not supported\"}\n");
+                socket->flush();
+                socket->disconnectFromServer();
+                return;
+            }
+
+            const QByteArray request = buffer.left(newlinePosition);
+
+            QJsonParseError parseError;
+            const QJsonDocument document =
+                QJsonDocument::fromJson(request, &parseError);
+
+            if (parseError.error != QJsonParseError::NoError
+                || !document.isObject())
+            {
+                socket->write(
+                    "{\"ok\":false,\"error\":\"invalid request\"}\n");
+                socket->flush();
+                socket->disconnectFromServer();
+                return;
+            }
+
+            const QJsonObject object = document.object();
+            const QString operation =
+                object.value(QStringLiteral("op")).toString();
+            if (operation == QStringLiteral("subscribe"))
+            {
+                if (!m_variableSubscribers.contains(socket))
+                    m_variableSubscribers.append(socket);
+
+                connect(socket, &QLocalSocket::disconnected,
+                        this, [this, socket]()
+                {
+                    m_variableSubscribers.removeAll(socket);
+                });
+
+                socket->write("{\"ok\":true,\"status\":\"subscribed\"}\n");
+                socket->flush();
+                return;
+            }
+
+            if (operation == QStringLiteral("poll"))
+            {
+                QJsonObject response;
+                response.insert(QStringLiteral("ok"), true);
+
+                if (m_variableRequests.isEmpty())
+                {
+                    response.insert(QStringLiteral("status"),
+                                    QStringLiteral("idle"));
+                }
+                else
+                {
+                    response.insert(QStringLiteral("status"),
+                                    QStringLiteral("request"));
+                    response.insert(QStringLiteral("request"),
+                                    m_variableRequests.dequeue());
+                }
+
+                socket->write(
+                    QJsonDocument(response).toJson(QJsonDocument::Compact)
+                    + '\n');
+                socket->flush();
+                socket->disconnectFromServer();
+                return;
+            }
+
+            if (operation != QStringLiteral("list")
+                && operation != QStringLiteral("register")
+                && operation != QStringLiteral("set")
+                && operation != QStringLiteral("delete")
+                && operation != QStringLiteral("result")
+                && operation != QStringLiteral("changed"))
+            {
+                socket->write(
+                    "{\"ok\":false,\"error\":\"unsupported operation\"}\n");
+                socket->flush();
+                socket->disconnectFromServer();
+                return;
+            }
+
+            if (operation == QStringLiteral("result"))
+            {
+                emit managedVariablesResponse(
+                    QString::fromUtf8(
+                        QJsonDocument(object).toJson(QJsonDocument::Compact)));
+            }
+            else if (operation == QStringLiteral("changed"))
+            {
+                emit managedVariablesChanged();
+            }
+
+            // Acknowledges receipt; execution is handled by the shell.
+            socket->write("{\"ok\":true,\"status\":\"received\"}\n");
+            socket->flush();
+            socket->disconnectFromServer();
+        });
+
+        connect(socket, &QLocalSocket::disconnected,
+                socket, &QObject::deleteLater);
+    }
+}
+
+
 
 void TermWidgetImpl::propertiesChanged()
 {

@@ -325,6 +325,8 @@ void TermWidgetHolder::splitCollapse(TermWidget * term)
     }
     else
         emit finished();
+
+    emit terminalsChanged();
 }
 
 TermWidget * TermWidgetHolder::split(TermWidget *term, Qt::Orientation orientation, TerminalConfig cfg)
@@ -350,6 +352,8 @@ TermWidget * TermWidgetHolder::split(TermWidget *term, Qt::Orientation orientati
 
     parent->insertWidget(ix, s);
     parent->setSizes(parentSizes);
+
+    emit terminalsChanged();
 
     w->setFocus(Qt::OtherFocusReason);
     return w;

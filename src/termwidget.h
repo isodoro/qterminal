@@ -26,6 +26,12 @@
 #include <QAction>
 #include "dbusaddressable.h"
 
+#include <QLocalServer>
+#include <QLocalSocket>
+#include <QJsonObject>
+#include <QQueue>
+#include <QList>
+
 #ifdef HAVE_LIBCANBERRA
 // forwarded declaration from <canberra.h>
 struct ca_context;
@@ -42,6 +48,7 @@ class TermWidgetImpl : public QTermWidget
         TermWidgetImpl(TerminalConfig &cfg, QWidget * parent=nullptr);
         virtual ~TermWidgetImpl();
         void propertiesChanged();
+        void enqueueManagedVariableRequest(const QJsonObject &request);
 
         bool hasCommand() const {
             return m_hasCommand;
@@ -50,6 +57,8 @@ class TermWidgetImpl : public QTermWidget
     signals:
         void renameSession();
         void removeCurrentSession();
+        void managedVariablesResponse(const QString &response);
+        void managedVariablesChanged();
 
     public slots:
         void zoomIn();
@@ -60,9 +69,14 @@ class TermWidgetImpl : public QTermWidget
     private slots:
         void activateUrl(const QUrl& url, bool fromContextMenu);
         void bell();
+        void acceptVariableConnection();
 
     private:
         bool m_hasCommand;
+        QLocalServer *m_variableServer = nullptr;
+        QString m_variableSocketPath;
+        QQueue<QJsonObject> m_variableRequests;
+        QList<QLocalSocket *> m_variableSubscribers;
 #ifdef HAVE_LIBCANBERRA
         ca_context* libcanberra_context;
 #endif

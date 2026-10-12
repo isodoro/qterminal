@@ -104,6 +104,7 @@ signals:
     void tabRenameRequested(int);
     void tabTitleColorChangeRequested(int);
     void currentTitleChanged(int);
+    void tabNameChanged(int);
 
 protected:
     enum Direction{Left = 1, Right};

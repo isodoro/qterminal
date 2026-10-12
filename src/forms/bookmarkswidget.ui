@@ -15,7 +15,7 @@
     <number>1</number>
    </property>
    <property name="topMargin">
-    <number>1</number>
+    <number>6</number>
    </property>
    <property name="rightMargin">
     <number>1</number>
@@ -26,27 +26,252 @@
    <property name="spacing">
     <number>1</number>
    </property>
-   <item row="0" column="0">
+
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="variablesSectionLabel">
+     <property name="text">
+      <string>Variables</string>
+     </property>
+    </widget>
+   </item>
+
+   <item row="1" column="0" colspan="2">
+    <widget class="QScrollArea" name="variableTabsScrollArea">
+     <property name="frameShape">
+      <enum>QFrame::Shape::NoFrame</enum>
+     </property>
+     <property name="maximumHeight">
+      <number>30</number>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+     </property>
+     <widget class="QWidget" name="variableTabsWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>300</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="variableTabsLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>2</number>
+       </property>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- Separator above the VSM controls -->
+   <item row="2" column="0" colspan="2">
+    <widget class="QFrame" name="variablePaneSeparatorTop">
+     <property name="minimumHeight">
+      <number>2</number>
+     </property>
+     <property name="maximumHeight">
+      <number>2</number>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+
+   <!-- VSM controls -->
+   <item row="3" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="variablePaneControlsLayout">
+     <property name="spacing">
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="variablePaneLabel">
+       <property name="text">
+        <string>VSM:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="variablePaneComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon</enum>
+       </property>
+       <property name="minimumContentsLength">
+        <number>12</number>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="listVariablesButton">
+       <property name="text">
+        <string>L</string>
+       </property>
+       <property name="toolTip">
+        <string>List variables in the selected pane</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="editVariableButton">
+       <property name="text">
+        <string>E</string>
+       </property>
+       <property name="toolTip">
+        <string>Edit a registered variable</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addVariableButton">
+       <property name="text">
+        <string>A</string>
+       </property>
+       <property name="toolTip">
+        <string>Add a variable to the selected pane</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteVariableButton">
+       <property name="text">
+        <string>D</string>
+       </property>
+       <property name="toolTip">
+        <string>Delete a registered variable</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <!-- Separator below the VSM controls -->
+   <item row="4" column="0" colspan="2">
+    <widget class="QFrame" name="variablePaneSeparatorBottom">
+     <property name="minimumHeight">
+      <number>2</number>
+     </property>
+     <property name="maximumHeight">
+      <number>2</number>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+
+   <item row="5" column="0" colspan="2">
+    <widget class="QListWidget" name="managedVariablesList">
+     <property name="minimumHeight">
+      <number>24</number>
+     </property>
+     <property name="maximumHeight">
+      <number>60</number>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+     </property>
+    </widget>
+   </item>
+
+   <item row="6" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Filter:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+
+   <item row="6" column="1">
     <widget class="QLineEdit" name="filterEdit">
      <property name="clearButtonEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+
+   <!-- Expand and Collapse controls: equal width -->
+   <item row="7" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="bookmarkTreeControlsLayout">
+     <property name="spacing">
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="expandAllButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Expand All [+]</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="collapseAllButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Collapse All [-]</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item row="8" column="0" colspan="2">
     <widget class="QTreeView" name="treeView">
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
     </widget>
    </item>
+
   </layout>
  </widget>
  <resources/>

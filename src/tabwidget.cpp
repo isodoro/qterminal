@@ -263,6 +263,8 @@ void TabWidget::renameSession(int index)
         }
         if (currentIndex() == index)
             emit currentTitleChanged(index);
+
+        emit tabNameChanged(index);
     }
 }
 

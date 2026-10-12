@@ -90,6 +90,7 @@ class TermWidgetHolder : public QWidget
         void renameSession();
         void termTitleChanged(QString title, QString icon) const;
         void termFocusChanged();
+        void terminalsChanged();
 
     private:
         QString m_wdir;

@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *   Copyright (C) 2014 by Petr Vanek                                      *
  *   petr@scribus.info                                                     *
@@ -23,14 +24,15 @@
 
 class AbstractBookmarkItem;
 class BookmarksModel;
-
+class TabWidget;
+class TermWidget;
 
 class BookmarksWidget : public QWidget, Ui::BookmarksWidget
 {
     Q_OBJECT
 
 public:
-    BookmarksWidget(QWidget *parent=nullptr);
+    BookmarksWidget(QWidget *parent = nullptr, TabWidget *tabs = nullptr);
     ~BookmarksWidget() override;
 
     void setup();
@@ -40,12 +42,23 @@ signals:
 
 private:
     BookmarksModel *m_model;
+    TabWidget *m_tabs;
+    QList<QPushButton *> m_variableTabButtons;
+    QList<TermWidget *> m_variableTerminals;
+    int m_variableTabIndex = -1;
+    TermWidget *m_selectedVariableTerminal = nullptr;
+
+    void updateVariableTabButtons();
+    void updateVariablePaneSelector();
+    void requestManagedVariables(TermWidget *terminal);
 
 private slots:
-    void handleCommand(const QModelIndex& index);
-    void filter(const QString& str);
+    void handleCommand(const QModelIndex &index);
+    void filter(const QString &str);
+    void handleManagedVariablesResponse(const QString &response);
+    void handleManagedVariablesChanged();
+    void handleTerminalsChanged();
 };
-
 
 class BookmarksModel : public QAbstractItemModel
 {
@@ -68,7 +81,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QModelIndexList allChildRows(const QModelIndex& parent) const;
+    QModelIndexList allChildRows(const QModelIndex &parent) const;
 
 private:
     AbstractBookmarkItem *getItem(const QModelIndex &index) const;

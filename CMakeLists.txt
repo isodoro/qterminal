@@ -30,6 +30,7 @@ set(SHELLQT_MINIMUM_VERSION "6.0.0")
 find_package(Qt6Core ${QT_MINIMUM_VERSION} REQUIRED)
 find_package(Qt6Gui ${QT_MINIMUM_VERSION} REQUIRED)
 find_package(Qt6LinguistTools ${QT_MINIMUM_VERSION} REQUIRED)
+find_package(Qt6Network ${QT_MINIMUM_VERSION} REQUIRED)
 find_package(Qt6Widgets ${QT_MINIMUM_VERSION} REQUIRED)
 find_package(LayerShellQt ${SHELLQT_MINIMUM_VERSION} REQUIRED)
 if(UNIX)
@@ -207,6 +208,7 @@ add_executable(${EXE_NAME} ${GUI_TYPE}
 target_link_libraries(${EXE_NAME}
     Qt6::Core
     Qt6::Gui
+    Qt6::Network
     Qt6::Widgets
     qtermwidget6
     LayerShellQtInterface
@@ -248,12 +250,14 @@ install(FILES
 
 install(FILES
     qterminal_bookmarks_example.xml
-    DESTINATION ${APP_DIR}
+    src/qterminal-variables.bash
+    src/qterminal-variables.zsh
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/qterminal"
 )
 
 if(NOT APPLEBUNDLE)
     install(TARGETS ${EXE_NAME} RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-    install(FILES ${QTERM_QM} DESTINATION ${TRANSLATIONS_DIR})
+    install(FILES ${QTERM_QM} DESTINATION "${CMAKE_INSTALL_DATADIR}/qterminal/translations")
     install(FILES src/icons/qterminal.png DESTINATION "${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps")
 else()
     message(STATUS "Building qterminal.app bundle")
