@@ -32,6 +32,34 @@ The following videos demonstrate the additional functionality introduced by this
 
 ### Variable Session Manager (V.S.M.)
 
+**Active Pane Display**
+
+https://github.com/user-attachments/assets/a45be46c-3b52-467e-b2cd-6bd0dbf2a17c
+
+**LEAD Descriptions**
+
+https://github.com/user-attachments/assets/5eb9738f-30c0-4468-bd34-033673960150
+
+**V.S.M. and LEAD Integration**
+
+https://github.com/user-attachments/assets/4fdee9d0-b658-4d88-8181-df9432abcc33
+
+### Improved Bookmark Filtering
+
+**Improved Filtering**
+
+https://github.com/user-attachments/assets/672cb8ef-9270-45de-a3e7-629d8123bbba
+
+**Expand and Collapse**
+
+https://github.com/user-attachments/assets/d1b25802-5faf-46cb-8906-3299eb3922da
+
+## Demonstrations
+
+The following videos demonstrate the additional functionality introduced by this fork.
+
+### Variable Session Manager (V.S.M.)
+
 - [Active Pane Display](docs/videos/active-pane-display.mp4) – Displaying the active terminal pane value change.
 - [LEAD Descriptions](docs/videos/lead-descriptions.mp4) – LEAD Descriptions – Demonstrating descriptive labels and information associated with managed variables.
 - [V.S.M. and LEAD Integration](docs/videos/vars-leads-test.mp4) – Demonstrating the interaction between the Variable Session Manager and LEAD functionality.
